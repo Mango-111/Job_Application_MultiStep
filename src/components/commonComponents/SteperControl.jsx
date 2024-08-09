@@ -1,48 +1,71 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { steps } from "../../constants/static_data";
-import { useSelector } from "react-redux";
-import { validateDocuments, validateEducationalDetails, validatePersonalInfo, validateTechSkills, validateWorkExperienceData } from "../../constants/validateForms";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  validateDocuments,
+  validateEducationalDetails,
+  validatePersonalInfo,
+  validateTechSkills,
+  validateWorkExperienceData,
+} from "../../helperUtils/validateForms";
+import { resetData } from "../../reduxData/formActions";
 
 const SteperControl = ({ currentStep }) => {
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
   const fomrDetails = useSelector((state) => state.form.formData);
 
   const validateBeforeNext = () => {
     let error = "";
-    if (currentStep === 1) {
-      error = validatePersonalInfo({ userPersonalDetails: fomrDetails?.step1 });
-    } else if (currentStep === 2) {
-      error = validateEducationalDetails({educationalInfo: fomrDetails?.step2 })
-    } else if (currentStep === 3){
-      error = validateWorkExperienceData({ workExperienceDetails: fomrDetails?.step3 })    
-    } else if (currentStep === 4) {
-      error = validateTechSkills({ techData: fomrDetails?.step4 })
-    } else if(currentStep === 5) {
-      error = validateDocuments({ documents: fomrDetails?.step5 })
-    } 
-    return error;
+    switch (currentStep) {
+      case 1: {
+        return (error = validatePersonalInfo({
+          userPersonalDetails: fomrDetails?.step1,
+        }));
+      }
+      case 2: {
+        return (error = validateEducationalDetails({
+          educationalInfo: fomrDetails?.step2,
+        }));
+      }
+      case 3: {
+        return (error = validateWorkExperienceData({
+          workExperienceDetails: fomrDetails?.step3,
+        }));
+      }
+      case 4: {
+        return (error = validateTechSkills({ techData: fomrDetails?.step4 }));
+      }
+      case 5: {
+        return (error = validateDocuments({ documents: fomrDetails?.step5 }));
+      }
+      default: {
+        return error;
+      }
+    }
   };
 
   const handleNext = () => {
-    let isErr = validateBeforeNext()
-    if(isErr){
-      setErrorMessage(isErr)
-    }
-    else if(currentStep < 6) {
-      setErrorMessage("")
+    let isErr = validateBeforeNext();
+    if (isErr) {
+      setErrorMessage(isErr);
+    } else if (currentStep < 6) {
+      setErrorMessage("");
       navigate(`/step${currentStep + 1}`);
-    }
-    else {
-      setErrorMessage("")
+    } else {
+      setErrorMessage("");
+      dispatch(resetData())
       navigate(`/success`);
     }
   };
 
   return (
     <>
-      <p className="mb-2 text-red-600 text-center py-2 font-semibold">{errorMessage}</p>
+      <p className="mb-2 text-red-600 text-center py-2 font-semibold">
+        {errorMessage}
+      </p>
       <div className="container mt-5 mb-5 flex justify-center">
         <Link
           to={currentStep - 1 === 0 ? "/" : `/step${currentStep - 1}`}

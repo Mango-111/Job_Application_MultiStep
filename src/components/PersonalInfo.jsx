@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InputField from "./commonComponents/InputField";
 import { useDispatch, useSelector } from "react-redux";
-import useDebounce from "../constants/useDebounce";
+import useDebounce from "../helperUtils/useDebounce";
 import { updateForm } from "../reduxData/formActions";
 import {
   FaUser,
@@ -10,7 +10,7 @@ import {
   FaHome,
   FaMapPin,
   FaCity,
-} from "react-icons/fa"; // Import icons
+} from "react-icons/fa";
 
 const PersonalInfo = () => {
   const [userPersonalData, setUserPersonalData] = useState({
@@ -46,6 +46,8 @@ const PersonalInfo = () => {
     }
     tempUserData[e.target.name] = value;
     setUserPersonalData(tempUserData);
+
+    // Added debounce function to update data in redux to avoid immediate update on change
     debouncedUpdateFormData(tempUserData);
   };
 
@@ -63,7 +65,7 @@ const PersonalInfo = () => {
             <FaUser className="absolute left-3 text-gray-500" />
             <InputField
               handleChange={handleInputChange}
-              val={userPersonalData?.Name}
+              val={userPersonalData?.Name || ""}
               Name="Name"
               Placeholder="Full Name"
               className="w-full pl-10 appearance-none p-1 px-2 text-gray-800 outline-none"
@@ -81,7 +83,7 @@ const PersonalInfo = () => {
             <FaPhone className="absolute left-3 text-gray-500" />
             <InputField
               handleChange={handleInputChange}
-              val={userPersonalData?.phone}
+              val={userPersonalData?.phone || ""}
               Name="phone"
               Placeholder="Mobile Number"
               className="w-full pl-10 appearance-none p-1 px-2 text-gray-800 outline-none"
@@ -98,7 +100,7 @@ const PersonalInfo = () => {
             <FaEnvelope className="absolute left-3 text-gray-500" />
             <InputField
               handleChange={handleInputChange}
-              val={userPersonalData?.email}
+              val={userPersonalData?.email || ""}
               Name="email"
               Placeholder="Email Id"
               className="w-full pl-10 appearance-none p-1 px-2 text-gray-800 outline-none"
@@ -115,7 +117,7 @@ const PersonalInfo = () => {
             <FaHome className="absolute left-3 text-gray-500" />
             <InputField
               handleChange={handleInputChange}
-              val={userPersonalData?.address}
+              val={userPersonalData?.address || ""}
               Name="address"
               Placeholder="Address"
               className="w-full pl-10 appearance-none p-1 px-2 text-gray-800 outline-none"
@@ -133,7 +135,7 @@ const PersonalInfo = () => {
             <FaMapPin className="absolute left-3 text-gray-500" />
             <InputField
               handleChange={handleInputChange}
-              val={userPersonalData?.pinCode}
+              val={userPersonalData?.pinCode || ""}
               Name="pinCode"
               Placeholder="Pinode"
               className="w-full pl-10 appearance-none p-1 px-2 text-gray-800 outline-none"
@@ -151,7 +153,7 @@ const PersonalInfo = () => {
             <FaCity className="absolute left-3 text-gray-500" />
             <InputField
               handleChange={handleInputChange}
-              val={userPersonalData?.city}
+              val={userPersonalData?.city || ""}
               Name="city"
               Placeholder="City"
               className="w-full pl-10 appearance-none p-1 px-2 text-gray-800 outline-none"

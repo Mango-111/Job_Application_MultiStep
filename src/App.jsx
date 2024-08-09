@@ -7,7 +7,7 @@ import WorkExperience from "./components/WorkExperience";
 import TechnicalSkills from "./components/TechnicalSkills";
 import AdditionalInfo from "./components/AdditionalInfo";
 import ReviewAndSubmit from "./components/ReviewAndSubmit";
-import PageNotFound from "./PageNotFound";
+import PageNotFound from "./components/PageNotFound";
 import store from "./reduxData/store";
 import SuccessPage from "./components/SuccessPage";
 import WelcomePage from "./components/WelcomePage";
@@ -16,43 +16,45 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <WelcomePage />, // Render the static page at the root path
-      errorElement: <PageNotFound />,
+      element: <WelcomePage />, 
+    },
+    {
+      path: "/success",
+      element: <SuccessPage />,
     },
     {
       path: "/",
       element: <MainContainer />,
-      errorElement: <PageNotFound />,
       children: [
         {
-          path: "/step1",
+          path: "step1",
           element: <PersonalInfo />,
         },
         {
-          path: "/step2",
+          path: "step2",
           element: <EducationalDetails />,
         },
         {
-          path: "/step3",
+          path: "step3",
           element: <WorkExperience />,
         },
         {
-          path: "/step4",
+          path: "step4",
           element: <TechnicalSkills />,
         },
         {
-          path: "/step5",
+          path: "step5",
           element: <AdditionalInfo />,
         },
         {
-          path: "/step6",
+          path: "step6",
           element: <ReviewAndSubmit />,
         },
       ],
     },
     {
-      path: "/success",
-      element: <SuccessPage />,
+      path: "*",
+      element: <PageNotFound />,
     },
   ]);
 

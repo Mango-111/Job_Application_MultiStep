@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { initialLevelsOfEdu } from "../constants/static_data";
 import { updateForm } from "../reduxData/formActions";
 import { FaUniversity, FaGraduationCap } from "react-icons/fa";
-import useDebounce from "../constants/useDebounce";
+import useDebounce from "../helperUtils/useDebounce";
 import InputField from "./commonComponents/InputField";
 
 const EducationalDetails = () => {

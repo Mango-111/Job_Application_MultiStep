@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateForm } from "../reduxData/formActions";
-import useDebounce from "../constants/useDebounce";
+import useDebounce from "../helperUtils/useDebounce";
 import logo from "../assets/file_upload.png";
 
 const AdditionalInfo = () => {
@@ -9,6 +9,8 @@ const AdditionalInfo = () => {
     resume: "",
     coverLetter: "",
   });
+  const resumeInputRef = useRef(null);
+  const coverLetterInputRef = useRef(null);
   const dispatch = useDispatch();
   const additionalInfoData = useSelector((state) => state.form.formData?.step5);
 
@@ -37,7 +39,16 @@ const AdditionalInfo = () => {
     let temp = { ...selectedFile };
     temp[type] = "";
     setSelectedFile(temp);
-    document.getElementById(`${type}-input`).value = "";
+    // Used Ref to remove displayed file name from UI
+    if (type === 'resume') {
+      if (resumeInputRef.current) {
+        resumeInputRef.current.value = "";
+      }
+    } else if (type === 'coverLetter') {
+      if (coverLetterInputRef.current) {
+        coverLetterInputRef.current.value = "";
+      }
+    }
     debouncedUpdateFormData(temp);
   };
 
@@ -62,6 +73,7 @@ const AdditionalInfo = () => {
                 name="resume"
                 type="file"
                 onChange={handleFileChange}
+                ref={resumeInputRef}
                 className="hidden"
               />
               <p className="text-blue-600 pt-2">Click to upload Resume</p>
@@ -101,6 +113,7 @@ const AdditionalInfo = () => {
                 name="coverLetter"
                 type="file"
                 onChange={handleFileChange}
+                ref={coverLetterInputRef}
                 className="hidden"
               />
               <p className="text-blue-600 pt-2">Click to upload Cover Letter</p>

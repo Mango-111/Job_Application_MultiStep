@@ -1,4 +1,4 @@
-import { UPDATE_FORM_DATA } from "./formActions";
+import { RESET_DATA, UPDATE_FORM_DATA } from "./formActions";
 
 const initialState = {
   formData: {
@@ -21,8 +21,10 @@ const formDataReducer = (state = { initialState }, action) => {
         },
       };
     }
-    default :
-    return state
+    case RESET_DATA: {
+      return initialState
+    }
+    default : return state
   }
 };
 

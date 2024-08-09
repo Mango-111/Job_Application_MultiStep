@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import InputField from "./commonComponents/InputField";
 import { useDispatch, useSelector } from "react-redux";
 import { updateForm } from "../reduxData/formActions";
-import useDebounce from "../constants/useDebounce";
+import useDebounce from "../helperUtils/useDebounce";
 import { FaPlus,   } from "react-icons/fa";
 import { AiOutlineClose } from 'react-icons/ai';
 
 const TechnicalSkills = () => {
+  // Used same key name to access states using key name
   const [techSkills, setTechSkills] = useState({
     tech: [],
     certificate: [],
