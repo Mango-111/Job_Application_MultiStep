@@ -61,6 +61,10 @@ const SteperControl = ({ currentStep }) => {
     }
   };
 
+  const clearErr=()=>{
+    setErrorMessage("")
+  }
+
   return (
     <>
       <p className="mb-2 text-red-600 text-center py-2 font-semibold">
@@ -69,6 +73,7 @@ const SteperControl = ({ currentStep }) => {
       <div className="container mt-5 mb-5 flex justify-center">
         <Link
           to={currentStep - 1 === 0 ? "/" : `/step${currentStep - 1}`}
+          onClick={clearErr}
           className={`mx-4 rounded-lg border-2 border-slate-400 bg-white py-1.5 px-6 h-10 font-semibold uppercase text-slate-400 transition duration-200 ease-in-out hover:bg-slate-500 hover:text-white 
         ${
           currentStep === 1

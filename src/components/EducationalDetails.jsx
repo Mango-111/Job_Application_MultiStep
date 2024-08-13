@@ -145,6 +145,7 @@ const EducationalDetails = () => {
                       className="w-full appearance-none p-1 px-2 text-gray-800 outline-none"
                       type="date"
                       maxDate={maxDate}
+                      onKeyDown={(e)=>e.preventDefault()}
                     />
                 </div>
               </div>

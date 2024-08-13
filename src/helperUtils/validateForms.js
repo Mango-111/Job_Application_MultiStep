@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const validatePersonalInfo = ({ userPersonalDetails = {} }) => {
   const { Name, phone, email, address, pinCode, city } = userPersonalDetails;
 
@@ -24,23 +26,38 @@ export const validatePersonalInfo = ({ userPersonalDetails = {} }) => {
   }
 };
 
+const isValidYearDifference = (data) => {
+  const sortedData = data.map((item) => ({
+    ...item,
+    yearOfPassing: moment(item.yearOfPassing),
+  }));
+
+  for (let i = 0; i < sortedData.length - 1; i++) {
+    const currentDate = sortedData[i].yearOfPassing;
+    const nextDate = sortedData[i + 1].yearOfPassing;
+
+    const yearsDifference = nextDate.diff(currentDate, "years", true);
+
+    if (yearsDifference < 2) {
+      return false;
+    }
+  }
+  return true;
+};
+
 export const validateEducationalDetails = ({ educationalInfo = [] }) => {
   if (educationalInfo?.length > 0) {
-    const yearsSet = new Set();
-    
+    const isValid = isValidYearDifference(educationalInfo);
+    if (!isValid) {
+      return "Gap between consecutive educational levels should be more than 2 years";
+    }
     return educationalInfo.reduce((acc, ele) => {
-      const yearOfPassing = ele.yearOfPassing ? ele.yearOfPassing.split('-')[0] : null;
-
       if (!ele.university) {
         return `Please enter university name for ${ele.level}`;
       } else if (!ele.percentage) {
         return `Please enter percentage for ${ele.level}`;
-      } else if (!yearOfPassing) {
+      } else if (!ele.yearOfPassing) {
         return `Please enter year of passing for ${ele.level}`;
-      } else if (yearsSet.has(yearOfPassing)) {
-        return `Year of passing ${yearOfPassing} is duplicated for ${ele.level}`;
-      } else {
-        yearsSet.add(yearOfPassing);
       }
       return acc;
     }, "");
@@ -48,8 +65,6 @@ export const validateEducationalDetails = ({ educationalInfo = [] }) => {
     return "Please fill all the fields";
   }
 };
-
-
 
 export const validateWorkExperienceData = ({ workExperienceDetails = [] }) => {
   if (workExperienceDetails?.length > 0) {

@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateForm } from "../reduxData/formActions";
 import InputField from "./commonComponents/InputField";
 import useDebounce from "../helperUtils/useDebounce";
-import { FaBuilding, FaBriefcase, FaCalendarAlt } from 'react-icons/fa'; // Importing icons
+import { FaBuilding, FaBriefcase, FaCalendarAlt } from "react-icons/fa"; // Importing icons
+import moment from "moment";
 
 const WorkExperience = () => {
   const [workExpData, setWorkExpData] = useState([
@@ -13,10 +14,22 @@ const WorkExperience = () => {
       companyName: "",
       jobTitle: "",
       duration: "",
+      startDate: "",
+      endDate: "",
     },
   ]);
+  const [maxDate, setMaxDate] = useState();
   const dispatch = useDispatch();
   const workExpDetails = useSelector((state) => state.form.formData?.step3);
+
+  useEffect(() => {
+    let d = new Date();
+    const y = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const date = String(d.getDate()).padStart(2, "0");
+    let todayDate = `${y}-${month}-${date}`;
+    setMaxDate(todayDate);
+  }, []);
 
   useEffect(() => {
     if (workExpDetails) {
@@ -32,9 +45,17 @@ const WorkExperience = () => {
     const { name, value } = e.target;
     let tempWorkExpArr = [...workExpData];
 
-    tempWorkExpArr = tempWorkExpArr.map((entry) =>
-      entry.id === id ? { ...entry, [name]: value } : entry
-    );
+    tempWorkExpArr = tempWorkExpArr.map((entry) => {
+      if (entry.id === id) {
+        let newEntryToPush = { ...entry, [name]: value };
+        if (newEntryToPush.startDate && newEntryToPush.endDate) {
+          newEntryToPush.duration = calculateDiffInWorkExp(newEntryToPush.startDate, newEntryToPush.endDate);
+        }
+        return newEntryToPush
+      } else {
+        return entry;
+      }
+    });
     setWorkExpData(tempWorkExpArr);
     debouncedUpdateFormData(tempWorkExpArr);
   };
@@ -62,6 +83,23 @@ const WorkExperience = () => {
     let resArr = tempArr.filter((entry) => entry.id !== id);
     setWorkExpData(resArr);
     debouncedUpdateFormData(resArr);
+  };
+
+  const calculateDiffInWorkExp = (date1, date2) => {
+    let stDate = date1;
+    let enDate = date2;
+    let tempStartDate = moment(stDate, "YYYY-MM-DD");
+    let tempEndDate = moment(enDate, "YYYY-MM-DD");
+
+    // Calculate year difference
+    let yearDiff = tempEndDate.diff(tempStartDate, "y");
+    tempStartDate.add(yearDiff, "years");
+
+    // Calculate Month difference
+    let months = tempEndDate.diff(tempStartDate, "months");
+    tempStartDate.add(months, "months");
+
+    return `${yearDiff} Years & ${months} Months `;
   };
 
   return (
@@ -114,25 +152,65 @@ const WorkExperience = () => {
 
               <div className="relative">
                 <p className="text-xs font-bold uppercase leading-8 text-gray-500 mb-1">
-                  Duration (Months)
+                  Start Date
                 </p>
                 <div className="flex items-center border border-gray-200 rounded bg-white py-1">
-                  <FaCalendarAlt className="absolute left-3 text-gray-500" />
                   <InputField
                     handleChange={(e) => handleInputChange(e, ele.id)}
-                    val={ele.duration}
-                    Name="duration"
-                    Placeholder="Ex: 24"
-                    className="pl-10 w-full appearance-none p-1 px-2 text-gray-800 outline-none"
-                    type="number"
+                    val={ele.startDate}
+                    Name="startDate"
+                    className="w-full appearance-none p-1 px-2 text-gray-800 outline-none"
+                    type="date"
+                    maxDate={maxDate}
+                    onKeyDown={(e)=>e.preventDefault()}
                   />
                 </div>
               </div>
 
-              <div className={`flex items-center ${i!== 0 ? 'justify-evenly' : ''} mt-6 space-x-2`}>
+              <div className="relative">
+                <p className="text-xs font-bold uppercase leading-8 text-gray-500 mb-1">
+                  End Date
+                </p>
+                <div className="flex items-center border border-gray-200 rounded bg-white py-1">
+                  <InputField
+                    handleChange={(e) => handleInputChange(e, ele.id)}
+                    val={ele.endDate}
+                    Name="endDate"
+                    className="w-full appearance-none p-1 px-2 text-gray-800 outline-none"
+                    type="date"
+                    maxDate={maxDate}
+                    onKeyDown={(e)=>e.preventDefault()}
+                  />
+                </div>
+              </div>
+
+              <div className="relative">
+                <p className="text-xs font-bold uppercase leading-8 text-gray-500 mb-1">
+                  Duration
+                </p>
+                <div className="flex items-center border border-gray-200 rounded bg-white py-1">
+                  <FaCalendarAlt className="absolute left-3 text-gray-500" />
+                  <InputField
+                    val={ele.duration}
+                    Name="duration"
+                    Placeholder="Ex: 24"
+                    className="pl-10 w-full appearance-none p-1 px-2 text-gray-800 outline-none"
+                    type="text"
+                    isFieldDisabled={true}
+                  />
+                </div>
+              </div>
+
+              <div
+                className={`flex items-center ${
+                  i !== 0 ? "justify-evenly" : ""
+                } mt-6 space-x-2`}
+              >
                 <button
                   onClick={handleNewEntry}
-                  className={`w-8 h-8 ${i == 0 ? 'mx-12': 'mr-6'} px bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                  className={`w-8 h-8 ${
+                    i == 0 ? "mx-12" : "mr-6"
+                  } px bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300`}
                   aria-label="Add new item"
                 >
                   <span className="text-xl font-bold">&#65291;</span>

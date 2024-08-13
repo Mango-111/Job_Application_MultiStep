@@ -8,7 +8,9 @@ const InputField = ({
   className,
   Placeholder,
   maxLen,
-  maxDate
+  maxDate,
+  isFieldDisabled,
+  onKeyDown
 }) => {
   return (
     <input
@@ -20,6 +22,8 @@ const InputField = ({
       placeholder={Placeholder}
       maxLength={maxLen}
       max={maxDate}
+      disabled={isFieldDisabled}
+      onKeyDown={onKeyDown}
     />
   );
 };
